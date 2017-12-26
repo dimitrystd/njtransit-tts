@@ -60,3 +60,6 @@ typings/
 # atom editor
 .tags
 .tags1
+
+# idea
+.idea/
