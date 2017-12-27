@@ -17,6 +17,7 @@
     "aws-sdk": "^2.175.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "path": "^0.12.7",
     "sync-request": "^4.1.0",
     "xml2js-parser": "^1.1.1"
   },
