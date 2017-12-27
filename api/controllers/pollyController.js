@@ -8,8 +8,11 @@ async function textToSpeech(req, res) {
     const {voiceId = 'Kimberly', text = ''} = req.body;
 
     try {
-        const filename = await generatePollyAudio(text, voiceId);
-        res.send(filename);
+        const filePath = path.join(global.mediaDir, generateFilename(text, voiceId));
+        if (!checkInCache(filePath)) {
+            await generatePollyAudio(text, voiceId);
+        }
+        res.send(filePath);
     }
     catch (e) {
         if (e.errorCode && e.error) {
@@ -22,7 +25,7 @@ async function textToSpeech(req, res) {
 }
 
 // Generate audio from Polly and check if output is a Buffer
-function generatePollyAudio(text, voiceId) {
+function generatePollyAudio(text, voiceId, filename) {
     const polly = new aws.Polly({
         region: 'us-east-1'
     });
@@ -33,9 +36,7 @@ function generatePollyAudio(text, voiceId) {
     };
     return polly.synthesizeSpeech(params).promise().then(audio => {
             if (audio.AudioStream instanceof Buffer) {
-                const filename = path.join(__dirname, generateFilename(text, voiceId));
                 fs.writeFileSync(filename, audio.AudioStream);
-                return filename;
             }
             else {
                 throw 'AudioStream is not a Buffer.';
@@ -47,6 +48,13 @@ function generatePollyAudio(text, voiceId) {
 function generateFilename(text, voiceId) {
     const hash = crypto.createHash('md5').update((text + voiceId).toLowerCase()).digest("hex");
     return text.slice(0, 50).replace(/[\s\:#\(\)\\\/]/g, '_').toLowerCase() + '_' + hash + '.mp3';
+}
+
+function checkInCache(filePath) {
+    if (!fs.existsSync(global.mediaDir)) {
+        fs.mkdirSync(global.mediaDir);
+    }
+    return fs.existsSync(filePath);
 }
 
 module.exports = {
