@@ -21,6 +21,7 @@
     "express": "^4.16.2",
     "path": "^0.12.7",
     "sync-request": "^4.1.0",
+    "url-join": "^2.0.2",
     "xml2js-parser": "^1.1.1"
   },
   "devDependencies": {

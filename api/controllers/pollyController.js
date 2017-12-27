@@ -2,17 +2,27 @@ const aws = require('aws-sdk');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const urljoin  = require('url-join');
+const busController = require('./busController');
+
+async function scheduleTts(req, res) {
+    req.body = {
+        voiceId: req.params.voice,
+        text: busController.getAndParseNjTransitSchedule(req.params.route, req.params.stop)
+    };
+    textToSpeech(req, res);
+}
 
 async function textToSpeech(req, res) {
-
     const {voiceId = 'Kimberly', text = ''} = req.body;
 
     try {
-        const filePath = path.join(global.mediaDir, generateFilename(text, voiceId));
+        const filename = generateFilename(text, req.params.voice);
+        const filePath = path.join(global.mediaDir, filename);
         if (!checkInCache(filePath)) {
-            await generatePollyAudio(text, voiceId);
+            await generatePollyAudio(text, voiceId, filePath);
         }
-        res.send(filePath);
+        res.send(urljoin(global.staticRoute, filename));
     }
     catch (e) {
         if (e.errorCode && e.error) {
@@ -32,7 +42,7 @@ function generatePollyAudio(text, voiceId, filename) {
     const params = {
         Text: text,
         OutputFormat: 'mp3',
-        VoiceId: voiceId // see Polly API for the list http://docs.aws.amazon.com/fr_fr/polly/latest/dg/API_Voice.html#API_Voice_Contents
+        VoiceId: voiceId // see Polly API for the list http://docs.aws.amazon.com/polly/latest/dg/API_Voice.html#API_Voice_Contents
     };
     return polly.synthesizeSpeech(params).promise().then(audio => {
             if (audio.AudioStream instanceof Buffer) {
@@ -58,6 +68,7 @@ function checkInCache(filePath) {
 }
 
 module.exports = {
+    scheduleTts,
     textToSpeech,
     generateFilename
 };
