@@ -2,14 +2,16 @@
   "name": "njtransit-rest-api",
   "version": "1.0.0",
   "description": "Get arriving bus time and generate text for TTS engine",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "mocha test",
     "start": "nodemon server.js"
   },
   "keywords": [
     "rest",
-    "njtransit"
+    "njtransit",
+    "aws",
+    "polly"
   ],
   "author": "Dmitry Studinskiy",
   "license": "ISC",
