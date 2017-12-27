@@ -1,6 +1,6 @@
-var expect = require('chai').expect;
-var fs = require('fs');
-var busController = require('../api/controllers/busController');
+const expect = require('chai').expect;
+const fs = require('fs');
+const busController = require('../api/controllers/busController');
 
 describe('busController', function() {
     describe('Parse XML', function() {
