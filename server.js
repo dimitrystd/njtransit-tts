@@ -12,6 +12,8 @@ routes = require('./api/routes/pollyRoutes');
 routes(app);
 
 global.mediaDir = __dirname + '/cache';
+app.use('/static', express.static(global.mediaDir));
+
 app.use(function(req, res) {
     res.status(404).send({url: req.originalUrl + ' not found'})
 });
