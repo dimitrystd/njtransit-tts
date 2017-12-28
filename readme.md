@@ -1,3 +1,13 @@
+# Docker
+# Build
+```
+docker build --pull --rm --tag=njtransit-tts .
+```
+# Run
+```
+docker run -it --rm -p 3000:3000 -e AWS_ACCESS_KEY_ID=AKI**** -e AWS_SECRET_ACCESS_KEY=UVMm**** njtransit-tts
+```
+
 # REST API
 ## NJTransit schedule
 Get NJTransit schedule for specific route and bus stop and convert it to human readable text.

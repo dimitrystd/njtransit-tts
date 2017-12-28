@@ -1,0 +1,11 @@
+node_modules*
+test*
+package-lock.json
+
+cache*
+
+.idea*
+.git*
+
+Dockerfile
+.dockerignore
